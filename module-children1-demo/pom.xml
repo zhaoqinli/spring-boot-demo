@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>multi-modules-demo</artifactId>
+		<groupId>com.example</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>module-children1-demo</artifactId>
+	<!-- 子项目的groupId和version一般和父项目相同，那么可以把子项目的这两个参数删除，这样会自动继承父项目的取值 -->
+	<!-- <groupId>com.example</groupId> <version>0.0.1-SNAPSHOT</version> -->
+	<name>module-children1-demo</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>dev_conf/*</exclude>
+					<exclude>test_conf/*</exclude>
+					<exclude>prod_conf/*</exclude>
+				</excludes>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources/${profileActive}_conf</directory>
+			</resource>
+		</resources>
+	</build>
+</project>

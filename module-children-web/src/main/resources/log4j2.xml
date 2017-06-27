@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- status="OFF"，可以去掉，它的含义为是否记录log4j2本身的event信息，默认是OFF -->
+<configuration status="OFF" monitorInterval="90">
+	<Properties>
+		<!-- 日志输出格式 %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n-->
+		<property name="log_pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%xEx%n</property>
+		<!-- 日志文件存放路径 -->
+		<!-- 日志文件最小切割单位 -->
+		<!-- 日志文件存放路径 -->
+		<property name="logBaseFolder">E:/logs/exmaple/</property>
+		<property name="logFileNamePrefix">example-web</property>
+		<!-- 日志文件最小切割单位 -->
+		<property name="every_file_size">500MB</property>
+	</Properties>
+	<appenders>
+		<!-- 控制台输出 -->
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="${log_pattern}" />
+		</Console>
+
+		<RollingRandomAccessFile name="infoLog" filePattern="${logBaseFolder}/%d{yyyy-MM-dd}/${logFileNamePrefix}-info-%d{yyyyMMdd-HH}.%i.log.gz" fileName="${logBaseFolder}/${logFileNamePrefix}-info.log" immediateFlush="false">
+			<PatternLayout pattern="${log_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy modulate="true" interval="24"/>
+				<SizeBaseDTriggeringPolicy size="${every_file_size}" />
+			</Policies>
+			<DefaultRolloverStrategy max="1000" />
+			<Filters>
+				<ThresholdFilter onMismatch="DENY" onMatch="ACCEPT" level="INFO" />
+			</Filters>
+		</RollingRandomAccessFile>
+		<RollingRandomAccessFile name="allLog" filePattern="${logBaseFolder}/%d{yyyy-MM-dd}/${logFileNamePrefix}-all-%d{yyyyMMdd-HH}.%i.log.gz" fileName="${logBaseFolder}/${logFileNamePrefix}-all.log" immediateFlush="false">
+			<PatternLayout pattern="${log_pattern}" />
+			<Policies>
+				<TimeBasedTriggeringPolicy modulate="true" interval="24"/>
+				<SizeBaseDTriggeringPolicy size="${every_file_size}" />
+			</Policies>
+			<DefaultRolloverStrategy max="1000" />
+		</RollingRandomAccessFile>
+		<!-- error File Config -->
+		<RollingRandomAccessFile name="errorLog" filePattern="${logBaseFolder}/%d{yyyy-MM-dd}/${logFileNamePrefix}-error-%d{yyyyMMdd-HH}.%i.log.gz" fileName="${logBaseFolder}/${logFileNamePrefix}-error.log" immediateFlush="false">
+			<PatternLayout pattern="${log_pattern}" />
+			<SizeBaseDTriggeringPolicy size="${every_file_size}" />
+			<Filters>
+				<!-- 只显示error信息 -->
+				<ThresholdFilter onMismatch="DENY" onMatch="ACCEPT" level="ERROR" />
+			</Filters>
+		</RollingRandomAccessFile>
+	</appenders>
+	<loggers>
+		<AsyncLogger name="com.example" level="DEBUG" additivity="false">
+			<appender-ref ref="Console" />
+		</AsyncLogger>
+
+		<asyncRoot level="info">
+			<appender-ref level="debug" ref="allLog" />
+			<appender-ref level="debug" ref="Console" />
+			<appender-ref level="info" ref="infoLog" />
+			<appender-ref level="error" ref="errorLog" />
+		</asyncRoot>
+
+	</loggers>
+</configuration>
